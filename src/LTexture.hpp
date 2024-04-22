@@ -1,0 +1,39 @@
+#pragma once
+#include <SDL.h>
+#include <SDL_image.h>
+#include "string"
+
+// Class containing the texture
+class LTexture
+{
+public:
+    // Initialization
+    LTexture();
+
+    ~LTexture();
+
+    // Loading a file into a texture
+    bool loadFromFile(std::string path, SDL_Renderer *gRenderer);
+
+    // Removing texture
+    void free();
+
+    void setColor(Uint8 red, Uint8 green, Uint8 blue);
+
+    void setBlendMode(SDL_BlendMode blending);
+
+    void setAlpha(Uint8 alpha);
+
+    // Render texture to screen
+    void render(int x, int y, SDL_Renderer *gRenderer, SDL_Rect *clip = NULL, double angle = 0.0, SDL_Point *center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+
+    int getWidth() { return mWidth; }
+    int getHeight() { return mHeight; }
+
+private:
+    // The texture itself
+    SDL_Texture *mTexture;
+
+    int mWidth;
+    int mHeight;
+};
