@@ -84,3 +84,30 @@ void LTexture::render(int x, int y, SDL_Renderer *gRenderer, SDL_Rect *clip, dou
 
     SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
+
+#if defined(SDL_TTF_MAJOR_VERSION)
+bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font *gFont, SDL_Renderer *gRenderer)
+{
+    free();
+
+    SDL_Surface *textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+
+    if (textSurface == NULL)
+    {
+        printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+
+    mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+    if (mTexture == NULL)
+    {
+        printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());
+    }
+
+    mWidth = textSurface->w;
+    mHeight = textSurface->h;
+
+    SDL_FreeSurface(textSurface);
+
+    return mTexture != NULL;
+}
+#endif

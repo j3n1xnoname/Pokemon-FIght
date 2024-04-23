@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "string"
 
 // Class containing the texture
@@ -14,6 +15,11 @@ public:
 
     // Loading a file into a texture
     bool loadFromFile(std::string path, SDL_Renderer *gRenderer);
+
+#if defined(SDL_TTF_MAJOR_VERSION)
+    // Creates image from font string
+    bool loadFromRenderedText(std::string textureText, SDL_Color textColor, TTF_Font *gFont, SDL_Renderer *gRenderer);
+#endif
 
     // Removing texture
     void free();
