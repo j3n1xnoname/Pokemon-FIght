@@ -111,3 +111,13 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
     return mTexture != NULL;
 }
 #endif
+
+void LTexture::flashing(Uint8 &alpha)
+{
+    alpha -= 3;
+    if (alpha < 0)
+    {
+        alpha = 255;
+    }
+    setAlpha(alpha);
+}

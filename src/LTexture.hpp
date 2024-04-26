@@ -24,6 +24,9 @@ public:
     // Removing texture
     void free();
 
+    // Flashing texture
+    void flashing(Uint8 &alpha);
+
     void setColor(Uint8 red, Uint8 green, Uint8 blue);
 
     void setBlendMode(SDL_BlendMode blending);

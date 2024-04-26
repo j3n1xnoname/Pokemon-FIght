@@ -2,23 +2,27 @@
 #include <SDL_ttf.h>
 #include <SDL_image.h>
 
+#include <fstream>
+#include <vector>
 #include <stdio.h>
 #include <iostream>
 #include "LTexture.hpp"
 #include "LTimer.hpp"
+#include "Pokemon.hpp"
 
 // Creating a window and rendering for it
 SDL_Window *gWindow = NULL;
 SDL_Renderer *gRenderer = NULL;
 TTF_Font *gFont = NULL;
 
-LTexture texture;
 LTexture newText;
 
+const int POKEMONS_COUNT = 3;
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 const int SCREEN_FPS = 60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
+Pokemon pokemons[POKEMONS_COUNT];
 
 enum switchBetweenScreens
 {
@@ -27,6 +31,22 @@ enum switchBetweenScreens
     CHOOSE_PLAYER2,
     THE_BATTLE
 };
+
+void fillPokemons()
+{
+
+    // Pokemon(std::string NAME = "", int HP = 0, int MANA = 0, int ATTACK_DAMAGE = 0, std::string ATTACK_NAME = "", int WASTE_MANA = 0, SDL_Renderer *gRenderer = NULL);
+    std::ifstream in("/home/stas/SDL/Pokemon/assets/pokemons.txt");
+
+    for (int i = 0; i < POKEMONS_COUNT; i++)
+    {
+        std::string name, attackName;
+        int hp, mana, attackDamage, wasteMana;
+        Pokemon tempPokemon = Pokemon{name, hp, mana, attackDamage, attackName, wasteMana, gRenderer};
+        pokemons[i] = tempPokemon;
+    }
+    in.close();
+}
 
 // Initialization of all SDL subsystems and windows
 bool init()
@@ -72,13 +92,12 @@ bool init()
     }
     SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
+    fillPokemons();
     return success;
 }
 
 void close()
 {
-
-    texture.free();
     newText.free();
     if (gFont != NULL)
         TTF_CloseFont(gFont);
@@ -99,12 +118,7 @@ void startGame(Uint8 &alpha, int &currentState, const Uint8 *currentKeyState)
     SDL_SetRenderDrawColor(gRenderer, 0, 0, 128, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(gRenderer);
     newText.render(SCREEN_WIDTH / 2 - newText.getWidth() / 2, SCREEN_HEIGHT / 2 - newText.getHeight() / 2, gRenderer);
-    alpha -= 3;
-    if (alpha < 0)
-    {
-        alpha = 255;
-    }
-    newText.setAlpha(alpha);
+    newText.flashing(alpha);
     if (currentKeyState[SDL_SCANCODE_RETURN])
     {
         currentState++;
@@ -112,18 +126,16 @@ void startGame(Uint8 &alpha, int &currentState, const Uint8 *currentKeyState)
     SDL_RenderPresent(gRenderer);
 }
 
-void choosePlayer1()
+void choosePlayer1(Uint8 &alpha, int &currentState, const Uint8 *currentKeyState)
 {
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(gRenderer);
+    SDL_RenderPresent(gRenderer);
 }
 
 bool loadMedia()
 {
     bool success = true;
-    if (!texture.loadFromFile("/home/stas/SDL/Pokemon/assets/pikachu.png", gRenderer))
-    {
-        printf("Unable to load image!\n");
-        success = false;
-    }
 
     SDL_Color tempColor = {232, 253, 96, SDL_ALPHA_OPAQUE};
 
@@ -132,6 +144,7 @@ bool loadMedia()
         printf("Unable to print text!\n");
         success = false;
     }
+
     return success;
 }
 
@@ -177,7 +190,7 @@ int main()
             startGame(alpha, currentState, currentKeyState);
             break;
         case CHOOSE_PLAYER1:
-            choosePlayer1();
+            choosePlayer1(alpha, currentState, currentKeyState);
             break;
         }
 
