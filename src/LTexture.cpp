@@ -6,6 +6,7 @@ LTexture::LTexture()
     mTexture = NULL;
     mWidth = 0;
     mHeight = 0;
+    alpha = 255;
 }
 
 LTexture::~LTexture()
@@ -67,9 +68,15 @@ void LTexture::setBlendMode(SDL_BlendMode blending)
     SDL_SetTextureBlendMode(mTexture, blending);
 }
 
-void LTexture::setAlpha(Uint8 alpha)
+void LTexture::setAlphaMod()
 {
     SDL_SetTextureAlphaMod(mTexture, alpha);
+}
+
+void LTexture::setNewAlpha(Uint8 ALPHA)
+{
+    alpha = ALPHA;
+    setAlphaMod();
 }
 
 void LTexture::render(int x, int y, SDL_Renderer *gRenderer, SDL_Rect *clip, double angle, SDL_Point *center, SDL_RendererFlip flip)
@@ -112,12 +119,12 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
 }
 #endif
 
-void LTexture::flashing(Uint8 &alpha)
+void LTexture::flashing()
 {
     alpha -= 3;
     if (alpha < 0)
     {
         alpha = 255;
     }
-    setAlpha(alpha);
+    setAlphaMod();
 }

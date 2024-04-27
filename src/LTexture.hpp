@@ -25,13 +25,16 @@ public:
     void free();
 
     // Flashing texture
-    void flashing(Uint8 &alpha);
+    void flashing();
 
     void setColor(Uint8 red, Uint8 green, Uint8 blue);
 
     void setBlendMode(SDL_BlendMode blending);
 
-    void setAlpha(Uint8 alpha);
+    void setAlphaMod();
+
+    Uint8 getAlpha() { return alpha; }
+    void setNewAlpha(Uint8 ALPHA);
 
     // Render texture to screen
     void render(int x, int y, SDL_Renderer *gRenderer, SDL_Rect *clip = NULL, double angle = 0.0, SDL_Point *center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
@@ -45,4 +48,5 @@ private:
 
     int mWidth;
     int mHeight;
+    Uint8 alpha;
 };

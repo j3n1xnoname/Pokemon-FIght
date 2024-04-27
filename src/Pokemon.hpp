@@ -12,7 +12,14 @@ public:
     ~Pokemon();
     int getHp() { return hp; }
     int getManaPoints() { return manaPoints; }
+    std::string getAttackName();
+
     LTexture pokemonTexture;
+    LTexture pokemonName;
+    LTexture hpText;
+    LTexture manaPointsText;
+    LTexture attackDamageText;
+    LTexture wasteManaText;
 
 private:
     int hp, manaPoints;
