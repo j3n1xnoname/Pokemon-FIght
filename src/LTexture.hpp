@@ -42,6 +42,8 @@ public:
     int getWidth() { return mWidth; }
     int getHeight() { return mHeight; }
 
+    bool isEmpty() { return mTexture == NULL; }
+
 private:
     // The texture itself
     SDL_Texture *mTexture;

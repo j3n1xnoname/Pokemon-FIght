@@ -1,12 +1,13 @@
 #include "Pokemon.hpp"
 #include "iostream"
 
-Pokemon::Pokemon(std::string NAME, int HP, int MANA, int ATTACK_DAMAGE, std::string ATTACK_NAME, int WASTE_MANA, SDL_Renderer *gRenderer)
+Pokemon::Pokemon(std::string NAME, int HP, int MANA)
 {
     name = NAME;
     hp = HP;
     manaPoints = MANA;
-    attack = Attack{ATTACK_DAMAGE, ATTACK_NAME, WASTE_MANA};
+    fullHp = HP;
+    fullManaPoints = MANA;
 }
 
 Pokemon::~Pokemon()
@@ -15,6 +16,7 @@ Pokemon::~Pokemon()
     hp = 0;
     manaPoints = 0;
     pokemonTexture.free();
+    pokemonTextureReversed.free();
     pokemonName.free();
     hpText.free();
     manaPointsText.free();
@@ -22,7 +24,7 @@ Pokemon::~Pokemon()
     wasteManaText.free();
 }
 
-std::string Pokemon::getAttackName()
+std::string Pokemon::getPokemonName()
 {
-    return attack.getAttackName();
+    return name;
 }
