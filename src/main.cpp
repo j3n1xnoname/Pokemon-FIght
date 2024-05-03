@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 
 #include <cstdlib>
 #include <ctime>
@@ -32,7 +33,20 @@ enum TextIndexes
     PLAYER_TWO,
     SKIP_MOVE,
     P1_GAME,
-    P2_GAME
+    P2_GAME,
+    P1_ATTACKS,
+    P2_ATTACKS,
+    HP,
+    MANA,
+    PLAYER_ONE_WIN,
+    PLAYER_TWO_WIN,
+
+    POKEMON_FIGHT,
+    GAME_WAS_MADE,
+    AUTHOR_NICKNAME,
+
+    ENTER_TO_CONTINUE
+
 };
 
 enum IconIndexes
@@ -44,7 +58,9 @@ enum IconIndexes
     ARROW,
     SWORD,
     BOTTLE,
-    HEART
+    HEART,
+    MANA_BOTTLE,
+    CROWN
 };
 
 enum PokemonNumber
@@ -68,11 +84,23 @@ TTF_Font *gFont64 = NULL;
 TTF_Font *gFont48 = NULL;
 TTF_Font *gFont32 = NULL;
 
+TTF_Font *gFontEnd1 = NULL;
+TTF_Font *gFontEnd2 = NULL;
+
 TTF_Font *gFontGame = NULL;
 
+Mix_Chunk *enter = NULL;
+Mix_Chunk *pressArrow = NULL;
+Mix_Chunk *pressEnterMenu = NULL;
+Mix_Chunk *hit = NULL;
+
+Mix_Music *battleMusic = NULL;
+Mix_Music *winnerMusic = NULL;
+Mix_Music *endMusic = NULL;
+
 const int POKEMONS_COUNT = 3;
-const int TEXT_COUNT = 8;
-const int ICON_COUNT = 8;
+const int TEXT_COUNT = 18;
+const int ICON_COUNT = 10;
 const int MAP_COUNT = 4;
 
 const int SCREEN_WIDTH = 1280;
@@ -85,15 +113,17 @@ LTexture texts[TEXT_COUNT];
 LTexture icons[ICON_COUNT];
 LTexture maps[MAP_COUNT];
 
-Player player1;
-Player player2;
+Player PLAYER1;
+Player PLAYER2;
 
 enum switchBetweenScreens
 {
     START_GAME = 1,
     CHOOSE_PLAYER1,
     CHOOSE_PLAYER2,
-    THE_BATTLE
+    THE_BATTLE,
+    WINNER,
+    END_GAME
 };
 
 void fillPngPokemon(Pokemon &pokemon, std::string name)
@@ -117,6 +147,7 @@ void fillPngPokemon(Pokemon &pokemon, std::string name)
 
     pokemon.healthbar.loadFromFile("/home/stas/SDL/Pokemon/assets/healthbar.png", gRenderer);
     pokemon.pokemonName.loadFromRenderedText(name, tempColor, gFont48, gRenderer);
+    pokemon.manaPointsbar.loadFromFile("/home/stas/SDL/Pokemon/assets/healthbar.png", gRenderer);
 }
 
 void fillAttackPokemon(Attack &attack, std::string attackName, std::string attackDescription, int attackDamage, int attackWasteMana)
@@ -225,6 +256,48 @@ bool fillTexts()
         success = false;
     }
 
+    if (!texts[P1_ATTACKS].loadFromRenderedText("Player 1 Attacks", SDL_Color{64, 96, 255, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[PLAYER_ONE_WIN].loadFromRenderedText("Player 1 WIN", SDL_Color{64, 96, 255, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer))
+    {
+        success = false;
+    }
+
+    if (!texts[PLAYER_TWO_WIN].loadFromRenderedText("Player 2 WIN", SDL_Color{255, 21, 21, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[P2_ATTACKS].loadFromRenderedText("Player 2 Attacks", SDL_Color{255, 21, 21, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[HP].loadFromRenderedText("HP:", SDL_Color{201, 15, 15, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[MANA].loadFromRenderedText("MANA:", SDL_Color{64, 96, 255, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[POKEMON_FIGHT].loadFromRenderedText("Pokemon Fight", SDL_Color{0, 0, 0, SDL_ALPHA_OPAQUE}, gFontEnd1, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[GAME_WAS_MADE].loadFromRenderedText("The game was made by", SDL_Color{0, 0, 0, SDL_ALPHA_OPAQUE}, gFontEnd1, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[AUTHOR_NICKNAME].loadFromRenderedText("J3N1X", SDL_Color{0, 0, 0, SDL_ALPHA_OPAQUE}, gFontEnd2, gRenderer))
+    {
+        success = false;
+    }
+    if (!texts[ENTER_TO_CONTINUE].loadFromRenderedText("Press c to continue...", SDL_Color{0, 0, 0, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer))
+    {
+        success = false;
+    }
+
     if (!success)
     {
         printf("Failed to load array!\n");
@@ -236,7 +309,7 @@ bool fillTexts()
 bool init()
 {
     bool success = true;
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) < 0)
     {
         printf("SDL fails to initialize. SDL_Error: %s\n", SDL_GetError());
         success = false;
@@ -265,6 +338,12 @@ bool init()
     if (TTF_Init() < 0)
     {
         printf("SDL_ttf fails to initialize. TTF_Error: %s\n", TTF_GetError());
+        success = false;
+    }
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
         success = false;
     }
 
@@ -300,23 +379,63 @@ void close()
         TTF_CloseFont(gFontGame);
     gFontGame = NULL;
 
+    if (gFontEnd1 != NULL)
+        TTF_CloseFont(gFontEnd1);
+    gFontEnd1 = NULL;
+
+    if (gFontEnd2 != NULL)
+        TTF_CloseFont(gFontEnd2);
+    gFontEnd2 = NULL;
+
     SDL_DestroyRenderer(gRenderer);
     gRenderer = NULL;
     SDL_DestroyWindow(gWindow);
     gWindow = NULL;
 
+    Mix_FreeChunk(enter);
+    enter = NULL;
+
+    Mix_FreeChunk(pressEnterMenu);
+    pressEnterMenu = NULL;
+
+    Mix_FreeChunk(pressArrow);
+    pressArrow = NULL;
+
+    Mix_FreeChunk(hit);
+    hit = NULL;
+
+    Mix_FreeMusic(battleMusic);
+    battleMusic = NULL;
+
+    Mix_FreeMusic(winnerMusic);
+    winnerMusic = NULL;
+
+    Mix_FreeMusic(endMusic);
+    endMusic = NULL;
+
     SDL_Quit();
     IMG_Quit();
     TTF_Quit();
+    Mix_Quit();
 }
 
-void startGame(int &currentState, const Uint8 *currentKeyState, LTexture &newText)
+void startGame(LTexture &newText)
 {
     newText.render(SCREEN_WIDTH / 2 - newText.getWidth() / 2, SCREEN_HEIGHT / 2 - newText.getHeight() / 2, gRenderer);
     newText.flashing();
-    if (currentKeyState[SDL_SCANCODE_RETURN])
+}
+
+void startGameEvent(SDL_Event &e, int &currentState)
+{
+    if (e.type == SDL_KEYDOWN)
     {
-        currentState++;
+        switch (e.key.keysym.sym)
+        {
+        case SDLK_RETURN:
+            currentState++;
+            Mix_PlayChannel(-1, enter, 0);
+            break;
+        }
     }
 }
 
@@ -357,6 +476,7 @@ void choosePlayerEvents(int &curEventState, SDL_Event &e, int &curState)
             {
                 pokemons[curEventState].pokemonTexture.setNewAlpha(255);
                 pokemons[curEventState].pokemonName.setNewAlpha(255);
+                Mix_PlayChannel(-1, pressArrow, 0);
             }
             curEventState--;
             break;
@@ -365,6 +485,7 @@ void choosePlayerEvents(int &curEventState, SDL_Event &e, int &curState)
             {
                 pokemons[curEventState].pokemonTexture.setNewAlpha(255);
                 pokemons[curEventState].pokemonName.setNewAlpha(255);
+                Mix_PlayChannel(-1, pressArrow, 0);
             }
             curEventState++;
             break;
@@ -373,6 +494,7 @@ void choosePlayerEvents(int &curEventState, SDL_Event &e, int &curState)
             {
                 pokemons[i].pokemonTexture.setNewAlpha(255);
                 pokemons[i].pokemonName.setNewAlpha(255);
+                Mix_PlayChannel(-1, pressEnterMenu, 0);
             }
             curState++;
             break;
@@ -388,6 +510,20 @@ void choosePlayerEvents(int &curEventState, SDL_Event &e, int &curState)
 bool loadMedia()
 {
     bool success = true;
+
+    gFontEnd1 = TTF_OpenFont("/home/stas/SDL/Pokemon/assets/SEASRN.ttf", 64);
+    if (gFontEnd1 == NULL)
+    {
+        printf("TTF failed to create font. TTF_Error: %s\n", TTF_GetError());
+        success = false;
+    }
+
+    gFontEnd2 = TTF_OpenFont("/home/stas/SDL/Pokemon/assets/FFF_Tusj.ttf", 64);
+    if (gFontEnd2 == NULL)
+    {
+        printf("TTF failed to create font. TTF_Error: %s\n", TTF_GetError());
+        success = false;
+    }
 
     gFont64 = TTF_OpenFont("/home/stas/SDL/Pokemon/assets/ChunkFive-Regular.otf", 64);
     if (gFont64 == NULL)
@@ -457,6 +593,16 @@ bool loadMedia()
             if (!icons[i].loadFromFile("/home/stas/SDL/Pokemon/assets/bottle.png", gRenderer))
                 flag = true;
         }
+        else if (i == MANA_BOTTLE)
+        {
+            if (!icons[i].loadFromFile("/home/stas/SDL/Pokemon/assets/manaBottle.png", gRenderer))
+                flag = true;
+        }
+        else if (i == CROWN)
+        {
+            if (!icons[i].loadFromFile("/home/stas/SDL/Pokemon/assets/crown.png", gRenderer))
+                flag = true;
+        }
 
         if (flag)
         {
@@ -509,6 +655,53 @@ bool loadMedia()
     if (!fillTexts())
         success = false;
 
+    // LOAD SOUND
+
+    enter = Mix_LoadWAV("/home/stas/SDL/Pokemon/assets/enterButton.mp3");
+    if (enter == NULL)
+    {
+        printf("Failed to load sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+        success = false;
+    }
+    pressArrow = Mix_LoadWAV("/home/stas/SDL/Pokemon/assets/pressArrow.mp3");
+    if (pressArrow == NULL)
+    {
+        printf("Failed to load sound effect(pressArrow)! SDL_mixer Error: %s\n", Mix_GetError());
+        success = false;
+    }
+    pressEnterMenu = Mix_LoadWAV("/home/stas/SDL/Pokemon/assets/pressEnterMenu.mp3");
+    if (pressEnterMenu == NULL)
+    {
+        printf("Failed to load sound effect(pressEnterMenu)! SDL_mixer Error: %s\n", Mix_GetError());
+        success = false;
+    }
+
+    hit = Mix_LoadWAV("/home/stas/SDL/Pokemon/assets/hit.wav");
+    if (hit == NULL)
+    {
+        printf("Failed to load sound effect(hit)! SDL_mixer Error: %s\n", Mix_GetError());
+        success = false;
+    }
+
+    battleMusic = Mix_LoadMUS("/home/stas/SDL/Pokemon/assets/battleMusic.mp3");
+    if (battleMusic == NULL)
+    {
+        printf("Failed to load music(battleMusic)! SDL_mixer Error: %s\n", Mix_GetError());
+        success = false;
+    }
+
+    winnerMusic = Mix_LoadMUS("/home/stas/SDL/Pokemon/assets/winnerMusic.mp3");
+    if (winnerMusic == NULL)
+    {
+        printf("Failed to load music(winnerMusic)! SDL_mixer Error: %s\n", Mix_GetError());
+        success = false;
+    }
+    endMusic = Mix_LoadMUS("/home/stas/SDL/Pokemon/assets/endMusic.wav");
+    if (endMusic == NULL)
+    {
+        printf("Failed to load music(endMusic)! SDL_mixer Error: %s\n", Mix_GetError());
+        success = false;
+    }
     return success;
 }
 
@@ -553,20 +746,74 @@ void outputIconsInBattle(int curState, Player &player)
     }
 }
 
-void battleLogic(Player &player1, Player &player2, int curState, int &curGlobalState)
+bool battleLogic(Player &player1, Player &player2, int curState, int &curGlobalState)
 {
-    player1.pokemon.setMana(player1.pokemon.getManaPoints() - player1.pokemon.pokemonAttacks[curState].getWastedMana());
+    int minusManaP1 = player1.pokemon.getManaPoints() - player1.pokemon.pokemonAttacks[curState].getWastedMana();
+
+    if (minusManaP1 < 0)
+    {
+        return false;
+    }
+    player1.pokemon.setMana(minusManaP1);
+
+    int minusHpP2 = player2.pokemon.getHp() - player1.pokemon.pokemonAttacks[curState].getAttackDamage();
+
+    if (minusHpP2 <= 0)
+    {
+        curGlobalState++;
+        minusHpP2 = 0;
+        Mix_HaltMusic();
+    }
+    player2.pokemon.setHp(minusHpP2);
+
+    player2.pokemon.setMana(std::min(player2.pokemon.getManaPoints() + 10, player2.pokemon.getFullMana()));
+
+    return true;
 }
 
-void battle(Player &player1, Player &player2, Player &currentPlayer, int &curState, int &curGlobalState, int curPlayer)
+int isManaMoreZero(Player &player1, Player &player2, int curState)
 {
+    return (player1.pokemon.getManaPoints() - player1.pokemon.pokemonAttacks[curState].getWastedMana()) >= 0;
+}
+
+void setNewAlphaInBattle(Player &player1, Player &player2)
+{
+    for (int i = 0; i <= SKIP_ATTACK; i++)
+    {
+        if (!isManaMoreZero(player1, player2, i))
+        {
+            player1.pokemon.pokemonAttacks[i].attackNameText.setNewAlpha(111);
+        }
+    }
+}
+
+void recoverTextureAlpha(Player &player1, Player &player2)
+{
+    for (int i = 0; i <= SKIP_ATTACK; i++)
+    {
+        player1.pokemon.pokemonAttacks[i].attackNameText.setNewAlpha(255);
+        player2.pokemon.pokemonAttacks[i].attackNameText.setNewAlpha(255);
+    }
+}
+
+void battle(Player &player1, Player &player2, Player &currentPlayer, int &curState, int &curGlobalState, int curPlayer, int anotherPlayer)
+{
+
     SDL_Rect tempRectangle1 = {player1.pokemon.pokemonTexture.getWidth() * 3 / 2 - 20,
                                player1.pokemon.pokemonTexture.getHeight() + player1.pokemon.healthbar.getHeight() + 10,
                                std::max((int)(1.0 * player1.pokemon.healthbar.getWidth() / player1.pokemon.getFullHp() * player1.pokemon.getHp()), 0), player1.pokemon.healthbar.getHeight()};
 
     SDL_Rect tempRectangle2 = {player2.pokemon.pokemonTexture.getWidth() + player2.pokemon.healthbar.getWidth() / 2 + 360,
                                player2.pokemon.pokemonTexture.getHeight() + player2.pokemon.healthbar.getHeight() + 10,
-                               std::max((int)(1.0 * player1.pokemon.healthbar.getWidth() / player1.pokemon.getFullHp() * player1.pokemon.getHp()), 0), player2.pokemon.healthbar.getHeight()};
+                               std::max((int)(1.0 * player2.pokemon.healthbar.getWidth() / player2.pokemon.getFullHp() * player2.pokemon.getHp()), 0), player2.pokemon.healthbar.getHeight()};
+
+    SDL_Rect tempRectangle3 = {player1.pokemon.pokemonTexture.getWidth() * 3 / 2 - 20,
+                               player1.pokemon.pokemonTexture.getHeight() + 3 * player1.pokemon.manaPointsbar.getHeight(),
+                               std::max((int)(1.0 * player1.pokemon.manaPointsbar.getWidth() / player1.pokemon.getFullMana() * player1.pokemon.getManaPoints()), 0), player1.pokemon.manaPointsbar.getHeight()};
+
+    SDL_Rect tempRectangle4 = {player2.pokemon.pokemonTexture.getWidth() + player2.pokemon.healthbar.getWidth() / 2 + 360,
+                               player2.pokemon.pokemonTexture.getHeight() + 3 * player2.pokemon.healthbar.getHeight(),
+                               std::max((int)(1.0 * player2.pokemon.manaPointsbar.getWidth() / player2.pokemon.getFullMana() * player2.pokemon.getManaPoints()), 0), player2.pokemon.manaPointsbar.getHeight()};
 
     player1.pokemon.pokemonTextureReversed.render(SCREEN_WIDTH / 2 - player1.pokemon.pokemonTexture.getWidth() - 50,
                                                   SCREEN_HEIGHT / 4 - player1.pokemon.pokemonTexture.getHeight() + 100, gRenderer);
@@ -576,60 +823,115 @@ void battle(Player &player1, Player &player2, Player &currentPlayer, int &curSta
     player1.pokemon.healthbar.render(player1.pokemon.pokemonTexture.getWidth() * 3 / 2 - 20,
                                      player1.pokemon.pokemonTexture.getHeight() + player1.pokemon.healthbar.getHeight() + 10, gRenderer);
 
+    player1.pokemon.manaPointsbar.render(player1.pokemon.pokemonTexture.getWidth() * 3 / 2 - 20,
+                                         player1.pokemon.pokemonTexture.getHeight() + 3 * player1.pokemon.manaPointsbar.getHeight(), gRenderer);
+
     icons[HEART].render(player1.pokemon.pokemonTexture.getWidth() * 3 / 2 - 20 - icons[HEART].getWidth(),
-                        player1.pokemon.pokemonTexture.getHeight() + player1.pokemon.healthbar.getHeight() - icons[HEART].getWidth() / 4, gRenderer);
+                        player1.pokemon.pokemonTexture.getHeight() + player1.pokemon.healthbar.getHeight() - icons[HEART].getHeight() / 4, gRenderer);
+
+    icons[MANA_BOTTLE].render(player1.pokemon.pokemonTexture.getWidth() * 3 / 2 - 29 - icons[MANA_BOTTLE].getWidth(),
+                              player1.pokemon.pokemonTexture.getHeight() + 3 * player1.pokemon.manaPointsbar.getHeight() - icons[MANA_BOTTLE].getWidth() / 4, gRenderer);
 
     player2.pokemon.healthbar.render(player2.pokemon.pokemonTexture.getWidth() + player2.pokemon.healthbar.getWidth() / 2 + 360,
                                      player2.pokemon.pokemonTexture.getHeight() + player2.pokemon.healthbar.getHeight() + 10, gRenderer);
 
+    player2.pokemon.manaPointsbar.render(player2.pokemon.pokemonTexture.getWidth() + player2.pokemon.healthbar.getWidth() / 2 + 360,
+                                         player2.pokemon.pokemonTexture.getHeight() + 3 * player2.pokemon.healthbar.getHeight(), gRenderer);
+
     icons[HEART].render(player2.pokemon.pokemonTexture.getWidth() + player2.pokemon.healthbar.getWidth() / 2 + 360 - icons[HEART].getWidth(),
-                        player2.pokemon.pokemonTexture.getHeight() + player2.pokemon.healthbar.getHeight() - icons[HEART].getWidth() / 4, gRenderer);
+                        player2.pokemon.pokemonTexture.getHeight() + player2.pokemon.healthbar.getHeight() - icons[HEART].getHeight() / 4, gRenderer);
+
+    icons[MANA_BOTTLE].render(player2.pokemon.pokemonTexture.getWidth() + player2.pokemon.healthbar.getWidth() / 2 + 360 - 4 * icons[MANA_BOTTLE].getWidth() / 3 + 1,
+                              player2.pokemon.pokemonTexture.getHeight() + player2.pokemon.healthbar.getHeight() + icons[MANA_BOTTLE].getHeight() + 5, gRenderer);
 
     texts[P1_GAME].render(10, 0, gRenderer);
     texts[P2_GAME].render(SCREEN_WIDTH - texts[P2_GAME].getWidth() - 10, 0, gRenderer);
+
+    texts[HP].render(10, SCREEN_HEIGHT - texts[HP].getHeight(), gRenderer);
+    player1.pokemon.hpText.render(10 + texts[HP].getWidth(), SCREEN_HEIGHT - texts[HP].getWidth(), gRenderer);
+    texts[MANA].render(10 + texts[HP].getWidth() + player1.pokemon.hpText.getWidth() * 2, SCREEN_HEIGHT - texts[MANA].getHeight(), gRenderer);
+    player1.pokemon.manaPointsText.render(10 + texts[HP].getWidth() + player1.pokemon.hpText.getWidth() * 2 + texts[MANA].getWidth(),
+                                          SCREEN_HEIGHT - texts[MANA].getHeight(), gRenderer);
+
+    texts[MANA].render(SCREEN_WIDTH - texts[MANA].getWidth() * 3 / 2, SCREEN_HEIGHT - texts[MANA].getHeight(), gRenderer);
+    player2.pokemon.manaPointsText.render(SCREEN_WIDTH - texts[MANA].getWidth() / 2, SCREEN_HEIGHT - texts[MANA].getHeight(), gRenderer);
+    texts[HP].render(SCREEN_WIDTH - texts[MANA].getWidth() * 3 / 2 - 4 * texts[HP].getWidth(), SCREEN_HEIGHT - texts[HP].getHeight(), gRenderer);
+    player2.pokemon.hpText.render(SCREEN_WIDTH - texts[MANA].getWidth() * 3 / 2 - 3 * texts[HP].getWidth(), SCREEN_HEIGHT - texts[HP].getHeight(), gRenderer);
+
+    icons[ARROW].render(0, SCREEN_HEIGHT / 2 + curState * 50 + 10, gRenderer);
+
+    outputIconsInBattle(curState, currentPlayer);
+
+    if (curPlayer == 1)
+    {
+        texts[P1_ATTACKS].render(SCREEN_WIDTH * 9 / 24, 0, gRenderer);
+    }
+    else if (curPlayer == 2)
+    {
+        texts[P2_ATTACKS].render(SCREEN_WIDTH * 9 / 24, 0, gRenderer);
+    }
+
+    if (curPlayer == 1)
+    {
+        setNewAlphaInBattle(player1, player2);
+    }
+    else
+    {
+        setNewAlphaInBattle(player2, player1);
+    }
+    currentPlayer.pokemon.pokemonAttacks[curState].attackDescriptionText.render(10, SCREEN_HEIGHT / 2 + 220, gRenderer);
 
     currentPlayer.pokemon.pokemonAttacks[FIRST_ATTACK].attackNameText.render(50, SCREEN_HEIGHT / 2, gRenderer);
     currentPlayer.pokemon.pokemonAttacks[SECOND_ATTACK].attackNameText.render(50, SCREEN_HEIGHT / 2 + 50, gRenderer);
     currentPlayer.pokemon.pokemonAttacks[THIRD_ATTACK].attackNameText.render(50, SCREEN_HEIGHT / 2 + 100, gRenderer);
     currentPlayer.pokemon.pokemonAttacks[SKIP_ATTACK].attackNameText.render(50, SCREEN_HEIGHT / 2 + 150, gRenderer);
-    icons[ARROW].render(0, SCREEN_HEIGHT / 2 + curState * 50 + 10, gRenderer);
-
-    outputIconsInBattle(curState, currentPlayer);
-
-    currentPlayer.pokemon.pokemonAttacks[curState].attackDescriptionText.render(10, SCREEN_HEIGHT / 2 + 220, gRenderer);
-
-    if (curPlayer == 1)
-    {
-        battleLogic(player1, player2, curGlobalState);
-    }
-    else
-    {
-        battleLogic(player2, player1, curGlobalState);
-    }
 
     SDL_SetRenderDrawColor(gRenderer, 201, 15, 15, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(gRenderer, &tempRectangle1);
     SDL_RenderFillRect(gRenderer, &tempRectangle2);
+    SDL_SetRenderDrawColor(gRenderer, 0, 66, 225, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(gRenderer, &tempRectangle3);
+    SDL_RenderFillRect(gRenderer, &tempRectangle4);
+    SDL_RenderPresent(gRenderer);
+
+    if (curGlobalState != THE_BATTLE)
+        SDL_Delay(3000);
 }
 
-void battleEvent(SDL_Event &e, int &currentPlayer, Player &curPlayer, Player &anotherPlayer, int &currentState, int &curGlobalState)
+bool battleEvent(SDL_Event &e, int &currentPlayer, Player &curPlayer, Player &anotherPlayer, int &currentState, int &curGlobalState)
 {
     if (e.type == SDL_KEYDOWN)
     {
         switch (e.key.keysym.sym)
         {
         case SDLK_DOWN:
-            currentState++;
+            if (currentState != SKIP_ATTACK)
+            {
+                currentState++;
+                Mix_PlayChannel(-1, pressArrow, 0);
+            }
             break;
         case SDLK_UP:
-            currentState--;
+            if (currentState != FIRST_ATTACK)
+            {
+                currentState--;
+                Mix_PlayChannel(-1, pressArrow, 0);
+            }
             break;
         case SDLK_RETURN:
-            currentState = 0;
-            if (currentPlayer == 1)
-                currentPlayer = 2;
-            else
-                currentPlayer = 1;
+            bool flag = battleLogic(curPlayer, anotherPlayer, currentState, curGlobalState);
+            if (flag)
+            {
+                if (currentState != SKIP_ATTACK)
+                {
+                    Mix_PlayChannel(-1, hit, 0);
+                }
+                else
+                {
+                    Mix_PlayChannel(-1, pressEnterMenu, 0);
+                }
+            }
+            return flag;
             break;
         }
 
@@ -637,6 +939,59 @@ void battleEvent(SDL_Event &e, int &currentPlayer, Player &curPlayer, Player &an
             currentState = SKIP_ATTACK;
         if (currentState < FIRST_ATTACK)
             currentState = FIRST_ATTACK;
+    }
+
+    return false;
+}
+
+void endGame(double &angle)
+{
+    SDL_Point point = {texts[AUTHOR_NICKNAME].getWidth() / 2, texts[AUTHOR_NICKNAME].getHeight() / 2};
+    texts[POKEMON_FIGHT].render(SCREEN_WIDTH / 2 - texts[POKEMON_FIGHT].getWidth() / 2, SCREEN_HEIGHT / 40, gRenderer);
+    texts[GAME_WAS_MADE].render(SCREEN_WIDTH / 2 - texts[GAME_WAS_MADE].getWidth() / 2, SCREEN_HEIGHT / 3, gRenderer);
+    texts[AUTHOR_NICKNAME].render(SCREEN_WIDTH / 2 - texts[AUTHOR_NICKNAME].getWidth() / 2, SCREEN_HEIGHT * 5 / 8,
+                                  gRenderer, NULL, angle, &point, SDL_FLIP_NONE);
+    texts[AUTHOR_NICKNAME].flashing();
+    angle++;
+    if (angle > 360)
+        angle = 0;
+}
+
+void winner(Player &player, LTexture &win)
+{
+    SDL_Point point1 = {icons[CROWN].getWidth() / 2, icons[CROWN].getHeight() / 2};
+
+    win.render(SCREEN_WIDTH / 2 - win.getWidth() / 2, SCREEN_HEIGHT / 40, gRenderer);
+    player.pokemon.pokemonTexture.render((SCREEN_WIDTH - player.pokemon.pokemonTexture.getWidth()) / 2,
+                                         (SCREEN_HEIGHT - player.pokemon.pokemonTexture.getHeight()) / 2, gRenderer);
+
+    icons[CROWN].render((SCREEN_WIDTH - player.pokemon.pokemonTexture.getWidth()) / 2,
+                        (SCREEN_HEIGHT - player.pokemon.pokemonTexture.getHeight()) / 2 - icons[CROWN].getHeight() / 2, gRenderer);
+
+    icons[CROWN].render((SCREEN_WIDTH - player.pokemon.pokemonTexture.getWidth()) / 2,
+                        (SCREEN_HEIGHT - player.pokemon.pokemonTexture.getHeight()) / 2 + icons[CROWN].getHeight(), gRenderer,
+                        NULL, 180, &point1, SDL_FLIP_HORIZONTAL);
+
+    icons[CROWN].render((SCREEN_WIDTH - player.pokemon.pokemonTexture.getWidth()) / 2 - icons[CROWN].getWidth() * 3 / 4,
+                        (SCREEN_HEIGHT - player.pokemon.pokemonTexture.getHeight()) / 2 + icons[CROWN].getHeight() / 4, gRenderer, NULL, -90, &point1, SDL_FLIP_HORIZONTAL);
+
+    icons[CROWN].render((SCREEN_WIDTH - player.pokemon.pokemonTexture.getWidth()) / 2 + icons[CROWN].getWidth() * 3 / 4,
+                        (SCREEN_HEIGHT - player.pokemon.pokemonTexture.getHeight()) / 2 + icons[CROWN].getHeight() / 4, gRenderer, NULL, 90, &point1, SDL_FLIP_HORIZONTAL);
+
+    texts[ENTER_TO_CONTINUE].render(SCREEN_WIDTH / 2 - texts[ENTER_TO_CONTINUE].getWidth() / 2, SCREEN_HEIGHT - texts[ENTER_TO_CONTINUE].getHeight() * 7 / 8, gRenderer);
+}
+
+void winnerEvent(SDL_Event &e, int &curGlobalState)
+{
+    if (e.type == SDL_KEYDOWN)
+    {
+        switch (e.key.keysym.sym)
+        {
+        case SDLK_c:
+            curGlobalState++;
+            Mix_HaltMusic();
+            break;
+        }
     }
 }
 
@@ -675,41 +1030,47 @@ int main()
 
     int framePlayer1 = 0;
 
+    double angle = 0.0;
+
+    int tempCurrentState = currentState;
+
     while (!quit)
     {
+        bool theBattle = false;
+
         while (SDL_PollEvent(&e) != 0)
         {
             if (e.type == SDL_QUIT)
             {
                 quit = true;
             }
+            else if (currentState == START_GAME)
+            {
+                startGameEvent(e, tempCurrentState);
+            }
             else if (currentState == CHOOSE_PLAYER1)
             {
-                choosePlayerEvents(tempState1, e, currentState);
+                choosePlayerEvents(tempState1, e, tempCurrentState);
             }
             else if (currentState == CHOOSE_PLAYER2)
             {
-                choosePlayerEvents(tempState2, e, currentState);
+                choosePlayerEvents(tempState2, e, tempCurrentState);
             }
             else if (currentState == THE_BATTLE)
             {
-                if (player2.pokemon.pokemonTexture.isEmpty())
-                {
-                    player2.pokemon = pokemons[tempState2];
-                }
-                if (player1.pokemon.pokemonTexture.isEmpty())
-                {
-                    player1.pokemon = pokemons[tempState1];
-                }
 
                 if (currentPlayer == 1)
                 {
-                    battleEvent(e, currentPlayer, player1, player2, tempStateBattle1, currentState);
+                    theBattle = battleEvent(e, currentPlayer, PLAYER1, PLAYER2, tempStateBattle1, tempCurrentState);
                 }
                 else
                 {
-                    battleEvent(e, currentPlayer, player2, player1, tempStateBattle2, currentState);
+                    theBattle = battleEvent(e, currentPlayer, PLAYER2, PLAYER1, tempStateBattle2, tempCurrentState);
                 }
+            }
+            else if (currentState == WINNER)
+            {
+                winnerEvent(e, tempCurrentState);
             }
         }
 
@@ -718,7 +1079,7 @@ int main()
         case START_GAME:
             SDL_SetRenderDrawColor(gRenderer, 0, 0, 128, SDL_ALPHA_OPAQUE);
             SDL_RenderClear(gRenderer);
-            startGame(currentState, currentKeyState, texts[ENTER_GAME]);
+            startGame(texts[ENTER_GAME]);
             break;
         case CHOOSE_PLAYER1:
             SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -733,18 +1094,80 @@ int main()
         case THE_BATTLE:
             SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
             SDL_RenderClear(gRenderer);
+            if (PLAYER1.pokemon.pokemonTexture.isEmpty())
+            {
+                PLAYER1.pokemon = pokemons[tempState1];
+            }
+            if (PLAYER2.pokemon.pokemonTexture.isEmpty())
+            {
+                PLAYER2.pokemon = pokemons[tempState2];
+            }
+
+            if (Mix_PlayingMusic() == 0 && tempCurrentState == currentState)
+            {
+                Mix_PlayMusic(battleMusic, -1);
+            }
+
+            PLAYER1.pokemon.hpText.free();
+            PLAYER1.pokemon.manaPointsText.free();
+            PLAYER1.pokemon.hpText.loadFromRenderedText(std::to_string(PLAYER1.pokemon.getHp()), SDL_Color{201, 15, 15, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer);
+            PLAYER1.pokemon.manaPointsText.loadFromRenderedText(std::to_string(PLAYER1.pokemon.getManaPoints()), SDL_Color{64, 96, 255, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer);
+
+            PLAYER2.pokemon.hpText.free();
+            PLAYER2.pokemon.manaPointsText.free();
+            PLAYER2.pokemon.hpText.loadFromRenderedText(std::to_string(PLAYER2.pokemon.getHp()), SDL_Color{201, 15, 15, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer);
+            PLAYER2.pokemon.manaPointsText.loadFromRenderedText(std::to_string(PLAYER2.pokemon.getManaPoints()), SDL_Color{64, 96, 255, SDL_ALPHA_OPAQUE}, gFontGame, gRenderer);
             if (currentPlayer == 1)
             {
-                battle(player1, player2, player1, tempStateBattle1, currentState, currentPlayer);
+                battle(PLAYER1, PLAYER2, PLAYER1, tempStateBattle1, tempCurrentState, currentPlayer, 2);
+                if (theBattle)
+                {
+                    tempStateBattle1 = 0;
+                    currentPlayer = 2;
+                }
             }
             else
             {
-                battle(player1, player2, player2, tempStateBattle2, currentState, currentPlayer);
+                battle(PLAYER1, PLAYER2, PLAYER2, tempStateBattle2, tempCurrentState, currentPlayer, 1);
+                if (theBattle)
+                {
+                    tempStateBattle2 = 0;
+                    currentPlayer = 1;
+                }
             }
+            recoverTextureAlpha(PLAYER1, PLAYER2);
+            break;
+
+        case WINNER:
+            SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+            SDL_RenderClear(gRenderer);
+            if (Mix_PlayingMusic() == 0 && tempCurrentState == currentState)
+            {
+                Mix_PlayMusic(winnerMusic, -1);
+            }
+
+            if (PLAYER1.pokemon.getHp() != 0)
+            {
+                winner(PLAYER1, texts[PLAYER_ONE_WIN]);
+            }
+            else
+            {
+                winner(PLAYER2, texts[PLAYER_TWO_WIN]);
+            }
+            break;
+        case END_GAME:
+            SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+            SDL_RenderClear(gRenderer);
+            if (Mix_PlayingMusic() == 0)
+            {
+                Mix_PlayMusic(endMusic, -1);
+            }
+            endGame(angle);
             break;
         }
 
-        SDL_RenderPresent(gRenderer);
+        if (tempCurrentState != THE_BATTLE)
+            SDL_RenderPresent(gRenderer);
 
         float avgFPS = countedFrames / (fpsTimer.getTicks() / 1000.f);
         if (avgFPS > 2000000)
@@ -757,6 +1180,8 @@ int main()
         {
             SDL_Delay(SCREEN_TICK_PER_FRAME - frameTicks);
         }
+
+        currentState = tempCurrentState;
     }
 
     close();

@@ -22,6 +22,8 @@ Pokemon::~Pokemon()
     manaPointsText.free();
     attackDamageText.free();
     wasteManaText.free();
+    manaPointsbar.free();
+    healthbar.free();
 }
 
 std::string Pokemon::getPokemonName()

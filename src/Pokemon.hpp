@@ -23,6 +23,7 @@ public:
     LTexture pokemonTextureReversed;
 
     LTexture healthbar;
+    LTexture manaPointsbar;
 
     LTexture pokemonName;
     LTexture hpText;
