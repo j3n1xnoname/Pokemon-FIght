@@ -13,6 +13,7 @@ Attack::Attack()
     attackDamage = 0;
     attackName = "";
     wasteMana = 0;
+    attackDescription = "";
 }
 
 Attack::~Attack()
@@ -28,4 +29,9 @@ Attack::~Attack()
         wasteManaText.free();
     if (!attackDescriptionText.isEmpty())
         attackDescriptionText.free();
+
+    attackDamage = 0;
+    attackName = "";
+    attackDescription = "";
+    wasteMana = 0;
 }

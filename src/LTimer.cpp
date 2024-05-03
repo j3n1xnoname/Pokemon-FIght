@@ -9,6 +9,14 @@ LTimer::LTimer()
     mStarted = false;
 }
 
+LTimer::~LTimer()
+{
+    mStartTicks = 0;
+    mPausedTicks = 0;
+    mPaused = false;
+    mStarted = false;
+}
+
 void LTimer::start()
 {
     mStarted = true;

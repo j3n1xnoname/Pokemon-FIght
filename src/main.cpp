@@ -101,7 +101,6 @@ Mix_Music *endMusic = NULL;
 const int POKEMONS_COUNT = 3;
 const int TEXT_COUNT = 18;
 const int ICON_COUNT = 10;
-const int MAP_COUNT = 4;
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
@@ -111,7 +110,6 @@ Pokemon pokemons[POKEMONS_COUNT];
 
 LTexture texts[TEXT_COUNT];
 LTexture icons[ICON_COUNT];
-LTexture maps[MAP_COUNT];
 
 Player PLAYER1;
 Player PLAYER2;
@@ -362,6 +360,7 @@ void close()
     {
         icons[i].free();
     }
+
     if (gFont64 != NULL)
         TTF_CloseFont(gFont64);
     gFont64 = NULL;
@@ -607,45 +606,6 @@ bool loadMedia()
         if (flag)
         {
             printf("IMG failed to create icon. IMG_Error: %s\n", IMG_GetError());
-            success = false;
-        }
-    }
-
-    for (int i = 0; i < MAP_COUNT; i++)
-    {
-        bool flag = false;
-        if (i == FIRST_MAP)
-        {
-            if (!maps[i].loadFromFile("/home/stas/SDL/Pokemon/assets/backgrounds/game_background_1.png", gRenderer))
-            {
-                flag = true;
-            }
-        }
-        else if (i == SECOND_MAP)
-        {
-            if (!maps[i].loadFromFile("/home/stas/SDL/Pokemon/assets/backgrounds/game_background_2.png", gRenderer))
-            {
-                flag = true;
-            }
-        }
-        else if (i == THIRD_MAP)
-        {
-            if (!maps[i].loadFromFile("/home/stas/SDL/Pokemon/assets/backgrounds/game_background_3.png", gRenderer))
-            {
-                flag = true;
-            }
-        }
-        else if (i == FOURTH_MAP)
-        {
-            if (!maps[i].loadFromFile("/home/stas/SDL/Pokemon/assets/backgrounds/game_background_4.png", gRenderer))
-            {
-                flag = true;
-            }
-        }
-
-        if (flag)
-        {
-            printf("IMG failed to create map. IMG_Error: %s\n", IMG_GetError());
             success = false;
         }
     }

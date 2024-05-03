@@ -7,4 +7,5 @@ Player::Player()
 
 Player::~Player()
 {
+    alive = false;
 }

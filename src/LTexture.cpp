@@ -23,6 +23,7 @@ void LTexture::free()
         mTexture = NULL;
         mWidth = 0;
         mHeight = 0;
+        alpha = 0;
     }
 }
 

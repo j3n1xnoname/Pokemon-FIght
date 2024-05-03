@@ -15,6 +15,8 @@ Pokemon::~Pokemon()
     name = "";
     hp = 0;
     manaPoints = 0;
+    fullHp = 0;
+    fullManaPoints = 0;
     pokemonTexture.free();
     pokemonTextureReversed.free();
     pokemonName.free();

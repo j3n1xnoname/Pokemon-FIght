@@ -6,6 +6,7 @@ class LTimer
 public:
     // Initializes variables
     LTimer();
+    ~LTimer();
 
     // The various clock actions
     void start();
