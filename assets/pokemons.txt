@@ -1,0 +1,47 @@
+Pikachu
+350
+50
+Friction
+The Pokemon rubs its electrified cheeks against the target.
+35
+0
+Quick Attack
+The Pokemon attacks the target at high speed.
+70
+15
+Thunder Shock
+The Pokemon attacks the target with a light electric shock
+175
+40
+
+Charizard
+500
+35
+Dragon Claw
+The Pokemon strikes with powerful dragon claws.
+30
+0
+Scratch
+The Pokemon scratches the target with its claws.
+100
+25
+Fire Fang
+The Pokemon attacks the target with flaming fangs.
+150
+35
+
+Bulbasaur
+450
+150
+Tackle
+The Pokemon makes a frontal attack.
+40
+0
+Vine Whip
+The Pokemon attacks the target with grape lashes.
+20
+75
+Razor Leaf
+The Pokemon throws sharp leaves at the target.
+35
+125
