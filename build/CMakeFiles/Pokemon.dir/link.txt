@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/Pokemon.dir/src/main.cpp.o CMakeFiles/Pokemon.dir/src/LTexture.cpp.o CMakeFiles/Pokemon.dir/src/LTimer.cpp.o CMakeFiles/Pokemon.dir/src/Pokemon.cpp.o CMakeFiles/Pokemon.dir/src/Attack.cpp.o CMakeFiles/Pokemon.dir/src/Player.cpp.o -o Pokemon  -lSDL2 -lSDL2_image -lSDL2 -lSDL2_ttf -lSDL2 -lSDL2_mixer -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer 

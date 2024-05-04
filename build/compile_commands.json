@@ -1,38 +1,38 @@
 [
 {
   "directory": "/home/stas/SDL/Pokemon/build",
-  "command": "/usr/bin/g++  -I/home/stas/SDL/Pokemon/include -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/CMakeStarterCpp.dir/src/main.cpp.o -c /home/stas/SDL/Pokemon/src/main.cpp",
+  "command": "/usr/bin/g++  -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/Pokemon.dir/src/main.cpp.o -c /home/stas/SDL/Pokemon/src/main.cpp",
   "file": "/home/stas/SDL/Pokemon/src/main.cpp",
-  "output": "CMakeFiles/CMakeStarterCpp.dir/src/main.cpp.o"
+  "output": "CMakeFiles/Pokemon.dir/src/main.cpp.o"
 },
 {
   "directory": "/home/stas/SDL/Pokemon/build",
-  "command": "/usr/bin/g++  -I/home/stas/SDL/Pokemon/include -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/CMakeStarterCpp.dir/src/LTexture.cpp.o -c /home/stas/SDL/Pokemon/src/LTexture.cpp",
+  "command": "/usr/bin/g++  -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/Pokemon.dir/src/LTexture.cpp.o -c /home/stas/SDL/Pokemon/src/LTexture.cpp",
   "file": "/home/stas/SDL/Pokemon/src/LTexture.cpp",
-  "output": "CMakeFiles/CMakeStarterCpp.dir/src/LTexture.cpp.o"
+  "output": "CMakeFiles/Pokemon.dir/src/LTexture.cpp.o"
 },
 {
   "directory": "/home/stas/SDL/Pokemon/build",
-  "command": "/usr/bin/g++  -I/home/stas/SDL/Pokemon/include -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/CMakeStarterCpp.dir/src/LTimer.cpp.o -c /home/stas/SDL/Pokemon/src/LTimer.cpp",
+  "command": "/usr/bin/g++  -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/Pokemon.dir/src/LTimer.cpp.o -c /home/stas/SDL/Pokemon/src/LTimer.cpp",
   "file": "/home/stas/SDL/Pokemon/src/LTimer.cpp",
-  "output": "CMakeFiles/CMakeStarterCpp.dir/src/LTimer.cpp.o"
+  "output": "CMakeFiles/Pokemon.dir/src/LTimer.cpp.o"
 },
 {
   "directory": "/home/stas/SDL/Pokemon/build",
-  "command": "/usr/bin/g++  -I/home/stas/SDL/Pokemon/include -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/CMakeStarterCpp.dir/src/Pokemon.cpp.o -c /home/stas/SDL/Pokemon/src/Pokemon.cpp",
+  "command": "/usr/bin/g++  -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/Pokemon.dir/src/Pokemon.cpp.o -c /home/stas/SDL/Pokemon/src/Pokemon.cpp",
   "file": "/home/stas/SDL/Pokemon/src/Pokemon.cpp",
-  "output": "CMakeFiles/CMakeStarterCpp.dir/src/Pokemon.cpp.o"
+  "output": "CMakeFiles/Pokemon.dir/src/Pokemon.cpp.o"
 },
 {
   "directory": "/home/stas/SDL/Pokemon/build",
-  "command": "/usr/bin/g++  -I/home/stas/SDL/Pokemon/include -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/CMakeStarterCpp.dir/src/Attack.cpp.o -c /home/stas/SDL/Pokemon/src/Attack.cpp",
+  "command": "/usr/bin/g++  -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/Pokemon.dir/src/Attack.cpp.o -c /home/stas/SDL/Pokemon/src/Attack.cpp",
   "file": "/home/stas/SDL/Pokemon/src/Attack.cpp",
-  "output": "CMakeFiles/CMakeStarterCpp.dir/src/Attack.cpp.o"
+  "output": "CMakeFiles/Pokemon.dir/src/Attack.cpp.o"
 },
 {
   "directory": "/home/stas/SDL/Pokemon/build",
-  "command": "/usr/bin/g++  -I/home/stas/SDL/Pokemon/include -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/CMakeStarterCpp.dir/src/Player.cpp.o -c /home/stas/SDL/Pokemon/src/Player.cpp",
+  "command": "/usr/bin/g++  -I/usr/include/SDL2 -I/usr/include/libpng16 -I/usr/include/webp -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-6 -g -std=gnu++17 -o CMakeFiles/Pokemon.dir/src/Player.cpp.o -c /home/stas/SDL/Pokemon/src/Player.cpp",
   "file": "/home/stas/SDL/Pokemon/src/Player.cpp",
-  "output": "CMakeFiles/CMakeStarterCpp.dir/src/Player.cpp.o"
+  "output": "CMakeFiles/Pokemon.dir/src/Player.cpp.o"
 }
 ]

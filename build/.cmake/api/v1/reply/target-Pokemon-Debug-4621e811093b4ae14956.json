@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "CMakeStarterCpp"
+			"path" : "Pokemon"
 		}
 	],
 	"backtrace" : 1,
@@ -12,7 +12,8 @@
 		[
 			"add_executable",
 			"target_link_libraries",
-			"target_include_directories"
+			"target_include_directories",
+			"set_target_properties"
 		],
 		"files" : 
 		[
@@ -32,13 +33,19 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 21,
+				"line" : 27,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 18,
+				"line" : 24,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 17,
 				"parent" : 0
 			}
 		]
@@ -54,10 +61,6 @@
 			],
 			"includes" : 
 			[
-				{
-					"backtrace" : 3,
-					"path" : "/home/stas/SDL/Pokemon/include"
-				},
 				{
 					"backtrace" : 3,
 					"path" : "/usr/include/SDL2"
@@ -96,7 +99,7 @@
 			{
 				"backtraces" : 
 				[
-					1
+					4
 				],
 				"standard" : "17"
 			},
@@ -111,7 +114,7 @@
 			]
 		}
 	],
-	"id" : "CMakeStarterCpp::@6890427a1f51a3e7e1df",
+	"id" : "Pokemon::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -177,8 +180,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "CMakeStarterCpp",
-	"nameOnDisk" : "CMakeStarterCpp",
+	"name" : "Pokemon",
+	"nameOnDisk" : "Pokemon",
 	"paths" : 
 	{
 		"build" : ".",

@@ -117,24 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named CMakeStarterCpp
+# Target rules for targets named Pokemon
 
 # Build rule for target.
-CMakeStarterCpp: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeStarterCpp
-.PHONY : CMakeStarterCpp
+Pokemon: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Pokemon
+.PHONY : Pokemon
 
 # fast build rule for target.
-CMakeStarterCpp/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/build
-.PHONY : CMakeStarterCpp/fast
+Pokemon/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/build
+.PHONY : Pokemon/fast
 
 src/Attack.o: src/Attack.cpp.o
 .PHONY : src/Attack.o
 
 # target to build an object file
 src/Attack.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Attack.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Attack.cpp.o
 .PHONY : src/Attack.cpp.o
 
 src/Attack.i: src/Attack.cpp.i
@@ -142,7 +142,7 @@ src/Attack.i: src/Attack.cpp.i
 
 # target to preprocess a source file
 src/Attack.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Attack.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Attack.cpp.i
 .PHONY : src/Attack.cpp.i
 
 src/Attack.s: src/Attack.cpp.s
@@ -150,7 +150,7 @@ src/Attack.s: src/Attack.cpp.s
 
 # target to generate assembly for a file
 src/Attack.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Attack.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Attack.cpp.s
 .PHONY : src/Attack.cpp.s
 
 src/LTexture.o: src/LTexture.cpp.o
@@ -158,7 +158,7 @@ src/LTexture.o: src/LTexture.cpp.o
 
 # target to build an object file
 src/LTexture.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/LTexture.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/LTexture.cpp.o
 .PHONY : src/LTexture.cpp.o
 
 src/LTexture.i: src/LTexture.cpp.i
@@ -166,7 +166,7 @@ src/LTexture.i: src/LTexture.cpp.i
 
 # target to preprocess a source file
 src/LTexture.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/LTexture.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/LTexture.cpp.i
 .PHONY : src/LTexture.cpp.i
 
 src/LTexture.s: src/LTexture.cpp.s
@@ -174,7 +174,7 @@ src/LTexture.s: src/LTexture.cpp.s
 
 # target to generate assembly for a file
 src/LTexture.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/LTexture.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/LTexture.cpp.s
 .PHONY : src/LTexture.cpp.s
 
 src/LTimer.o: src/LTimer.cpp.o
@@ -182,7 +182,7 @@ src/LTimer.o: src/LTimer.cpp.o
 
 # target to build an object file
 src/LTimer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/LTimer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/LTimer.cpp.o
 .PHONY : src/LTimer.cpp.o
 
 src/LTimer.i: src/LTimer.cpp.i
@@ -190,7 +190,7 @@ src/LTimer.i: src/LTimer.cpp.i
 
 # target to preprocess a source file
 src/LTimer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/LTimer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/LTimer.cpp.i
 .PHONY : src/LTimer.cpp.i
 
 src/LTimer.s: src/LTimer.cpp.s
@@ -198,7 +198,7 @@ src/LTimer.s: src/LTimer.cpp.s
 
 # target to generate assembly for a file
 src/LTimer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/LTimer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/LTimer.cpp.s
 .PHONY : src/LTimer.cpp.s
 
 src/Player.o: src/Player.cpp.o
@@ -206,7 +206,7 @@ src/Player.o: src/Player.cpp.o
 
 # target to build an object file
 src/Player.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Player.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Player.cpp.o
 .PHONY : src/Player.cpp.o
 
 src/Player.i: src/Player.cpp.i
@@ -214,7 +214,7 @@ src/Player.i: src/Player.cpp.i
 
 # target to preprocess a source file
 src/Player.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Player.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Player.cpp.i
 .PHONY : src/Player.cpp.i
 
 src/Player.s: src/Player.cpp.s
@@ -222,7 +222,7 @@ src/Player.s: src/Player.cpp.s
 
 # target to generate assembly for a file
 src/Player.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Player.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Player.cpp.s
 .PHONY : src/Player.cpp.s
 
 src/Pokemon.o: src/Pokemon.cpp.o
@@ -230,7 +230,7 @@ src/Pokemon.o: src/Pokemon.cpp.o
 
 # target to build an object file
 src/Pokemon.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Pokemon.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Pokemon.cpp.o
 .PHONY : src/Pokemon.cpp.o
 
 src/Pokemon.i: src/Pokemon.cpp.i
@@ -238,7 +238,7 @@ src/Pokemon.i: src/Pokemon.cpp.i
 
 # target to preprocess a source file
 src/Pokemon.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Pokemon.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Pokemon.cpp.i
 .PHONY : src/Pokemon.cpp.i
 
 src/Pokemon.s: src/Pokemon.cpp.s
@@ -246,7 +246,7 @@ src/Pokemon.s: src/Pokemon.cpp.s
 
 # target to generate assembly for a file
 src/Pokemon.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/Pokemon.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/Pokemon.cpp.s
 .PHONY : src/Pokemon.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -254,7 +254,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -262,7 +262,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -270,7 +270,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/CMakeStarterCpp.dir/build.make CMakeFiles/CMakeStarterCpp.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Pokemon.dir/build.make CMakeFiles/Pokemon.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -281,7 +281,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... CMakeStarterCpp"
+	@echo "... Pokemon"
 	@echo "... src/Attack.o"
 	@echo "... src/Attack.i"
 	@echo "... src/Attack.s"

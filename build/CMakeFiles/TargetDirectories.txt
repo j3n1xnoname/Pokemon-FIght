@@ -1,3 +1,3 @@
-/home/stas/SDL/Pokemon/build/CMakeFiles/CMakeStarterCpp.dir
+/home/stas/SDL/Pokemon/build/CMakeFiles/Pokemon.dir
 /home/stas/SDL/Pokemon/build/CMakeFiles/edit_cache.dir
 /home/stas/SDL/Pokemon/build/CMakeFiles/rebuild_cache.dir
